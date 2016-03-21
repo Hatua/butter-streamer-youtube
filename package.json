@@ -1,26 +1,26 @@
 {
-  "name": "butter-streamer-http",
+  "name": "butter-streamer-youtube",
   "version": "0.0.1",
-  "description": "Butter Streamer for http streams, the simplest around",
+  "description": "Butter Streamer for youtube streams, the simplest around",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/butterstreamers/butter-streamer-http.git"
+    "url": "git+https://github.com/butterstreamers/butter-streamer-youtube.git"
   },
   "keywords": [
     "butter",
     "streamer",
-    "http"
+    "youtube"
   ],
   "author": "XeonCore",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/butterstreamers/butter-streamer-http/issues"
+    "url": "https://github.com/butterstreamers/butter-streamer-youtube/issues"
   },
-  "homepage": "https://github.com/butterstreamers/butter-streamer-http#readme",
+  "homepage": "https://github.com/butterstreamers/butter-streamer-youtube#readme",
   "dependencies": {
     "butter-base-streamer": "0.0.1"
   }
