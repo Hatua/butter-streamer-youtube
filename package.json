@@ -23,6 +23,6 @@
   "homepage": "https://github.com/butterstreamers/butter-streamer-youtube#readme",
   "dependencies": {
     "butter-base-streamer": "^0.0.2",
-    "ytdl": "^0.3.14"
+    "ytdl-core": "^0.7.12"
   }
 }
