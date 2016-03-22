@@ -1,6 +1,6 @@
 {
   "name": "butter-streamer-youtube",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Butter Streamer for youtube streams, the simplest around",
   "main": "index.js",
   "scripts": {
@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/butterstreamers/butter-streamer-youtube#readme",
   "dependencies": {
-    "butter-base-streamer": "0.0.1"
+    "butter-base-streamer": "0.0.1",
+    "ytdl": "^0.3.14"
   }
 }
