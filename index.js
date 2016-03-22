@@ -28,7 +28,8 @@ YoutubeStreamer.prototype.config = {
 	name: 'YouTube Streamer',
 	domain: /(youtu.be|youtube.com)/,
 	protocol: /(youtube|yt)/,
-	type: 'youtube'
+	type: 'youtube',
+	priority: 10
 }
 
 YoutubeStreamer.prototype.seek = function(start, end) {
