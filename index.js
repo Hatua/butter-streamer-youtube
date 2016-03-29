@@ -1,5 +1,6 @@
 var inherits = require('util').inherits
-  , ytdl = require('ytdl-core');
+  , ytdl  = require('ytdl-core')
+  , debug = require('debug')('butter-streamer-youtube');
 
 var Streamer = require('butter-base-streamer');
 
@@ -15,10 +16,16 @@ function YoutubeStreamer(source, options) {
 
 	this._options = options;
 	this._source = source;
+	this.file = {};
 	this._video = ytdl(source, {quality: options.youtube.audio ? 140 : (options.youtube.hd ? 22 : 18)});
 	this._video.on('info', function(info, format) {
+//		debug ('info', info, format)
 		self._progress.setLength(format.size);
-        self.file.length = format.size;
+		self._isReady({
+			length: info.timestamp * format.bitrate,
+			type: format.type,
+			name: 'youtube-video.' +  format.container
+		});
 	})
 	this._streamify.resolve(this._video);
 }
@@ -53,7 +60,7 @@ YoutubeStreamer.prototype.destroy = function() {
 	this._streamify.unresolve();
 	this._video = null;
 	this._destroyed = true;
-    this.file = {};
+	this.file = {};
 }
 
 module.exports = YoutubeStreamer;
