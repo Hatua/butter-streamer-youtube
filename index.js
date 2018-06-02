@@ -1,66 +1,62 @@
-var inherits = require('util').inherits
-  , ytdl  = require('ytdl-core')
-  , debug = require('debug')('butter-streamer-youtube');
+const ytdl = require('ytdl-core')
+const debug = require('debug')('butter-streamer-youtube')
 
-var Streamer = require('butter-base-streamer');
-
+const Streamer = require('butter-base-streamer')
+const config = {
+  name: 'YouTube Streamer',
+  domain: /(youtu.be|youtube.com)/,
+  protocol: /(youtube|yt)/,
+  type: 'youtube',
+  priority: 10
+}
 /* -- YouTube Streamer -- */
-function YoutubeStreamer(source, options) {
-	if(!(this instanceof YoutubeStreamer))
-		return new YoutubeStreamer(source, options);
+class YoutubeStreamer extends Streamer {
+  constructor (source, options) {
+    super(options)
+    options = options || {}
+    options.youtube = options.youtube || {}
 
-	Streamer.call(this, options);
-	var self = this;
-	options = options || {};
-	options.youtube = options.youtube || {};
+    this.config = config
 
-	this._options = options;
-	this._source = source;
-	this.file = {};
-	this._video = ytdl(source, {quality: options.youtube.audio ? 140 : (options.youtube.hd ? 22 : 18)});
-	this._video.on('info', function(info, format) {
-//		debug ('info', info, format)
-		self._progress.setLength(format.size);
-		self._isReady({
-			length: info.timestamp * format.bitrate,
-			type: format.type,
-			name: 'youtube-video.' +  format.container
-		});
-	})
-	this._streamify.resolve(this._video);
-}
-inherits(YoutubeStreamer, Streamer);
+    this._options = options
+    this._source = source
+    this.file = {}
+    this._video = ytdl(source, {quality: options.youtube.audio ? 140 : (options.youtube.hd ? 22 : 18)})
+    this._video.on('info', (info, format) => {
+      debug('info', info, format)
+      this._progress.setLength(format.size)
+      this._isReady({
+        length: info.timestamp * format.bitrate,
+        type: format.type,
+        name: 'youtube-video.' + format.container
+      })
+    })
+    this._streamify.resolve(this._video)
+  }
 
-YoutubeStreamer.prototype.config = {
-	name: 'YouTube Streamer',
-	domain: /(youtu.be|youtube.com)/,
-	protocol: /(youtube|yt)/,
-	type: 'youtube',
-	priority: 10
-}
+  seek (start, end) {
+    if (this._destroyed) throw new ReferenceError('Streamer already destroyed')
 
-YoutubeStreamer.prototype.seek = function(start, end) {
-	if(this._destroyed) throw new ReferenceError('Streamer already destroyed');
+    start = start || 0
 
-	var self = this;
-	start = start || 0;
+    this._video = ytdl(this._source, {quality: this._options.youtube.audio ? 140 : (this._options.youtube.hd ? 22 : 18), range: start + '-' + (end !== undefined ? end : '')})
+    this._video.on('info', (info, format) => {
+      this._progress.setLength(format.size)
+    })
 
-	this._video = ytdl(this._source, {quality: this._options.youtube.audio ? 140 : (this._options.youtube.hd ? 22 : 18), range: start + '-' + (end !== undefined ? end : '')});
-	this._video.on('info', function(info, format) {
-		self._progress.setLength(format.size);
-	})
+    this._streamify.unresolve()
+    this._streamify.resolve(this._video)
+  }
+  destroy () {
+    if (this._destroyed) throw new ReferenceError('Streamer already destroyed')
 
-	this._streamify.unresolve();
-	this._streamify.resolve(this._video);
+    this._streamify.unresolve()
+    this._video = null
+    this._destroyed = true
+    this.file = {}
+  }
 }
 
-YoutubeStreamer.prototype.destroy = function() {
-	if(this._destroyed) throw new ReferenceError('Streamer already destroyed');
+YoutubeStreamer.config = config
 
-	this._streamify.unresolve();
-	this._video = null;
-	this._destroyed = true;
-	this.file = {};
-}
-
-module.exports = YoutubeStreamer;
+module.exports = YoutubeStreamer

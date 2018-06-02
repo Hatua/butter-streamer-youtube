@@ -4,7 +4,8 @@
   "description": "Butter Streamer for youtube streams, the simplest around",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "standard --env mocha"
   },
   "repository": {
     "type": "git",
@@ -23,7 +24,10 @@
   "homepage": "https://github.com/butterstreamers/butter-streamer-youtube#readme",
   "dependencies": {
     "butter-base-streamer": "^0.0.2",
-    "debug": "^2.2.0",
-    "ytdl-core": "^0.7.12"
+    "debug": "^3.1.0",
+    "ytdl-core": "^0.20.4"
+  },
+  "devDependencies": {
+    "standard": "^11.0.1"
   }
 }
