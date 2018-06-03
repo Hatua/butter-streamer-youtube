@@ -48,11 +48,8 @@ class YoutubeStreamer extends Streamer {
   }
 
   destroy () {
-    if (this._destroyed) throw new ReferenceError('Streamer already destroyed')
-
-    this.close()
+    super.destroy()
     this._video = null
-    this._destroyed = true
     this.file = {}
   }
 }
