@@ -36,10 +36,9 @@ class YoutubeStreamer extends Streamer {
       this.ready(this._video, processVideoInfo(info, format)))
   }
 
-  seek (start, end) {
+  seek (start = 0, end) {
     if (this._destroyed) throw new ReferenceError('Streamer already destroyed')
-
-    start = start || 0
+    debug('seek', start, end)
 
     this._video = ytdl(this._source, {quality: this._options.youtube.audio ? 140 : (this._options.youtube.hd ? 22 : 18), range: start + '-' + (end !== undefined ? end : '')})
 
