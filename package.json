@@ -1,10 +1,13 @@
 {
   "name": "butter-streamer-youtube",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "Butter Streamer for youtube streams, the simplest around",
   "main": "index.js",
+  "butter": {
+    "testArgs": "youtube?uri=\"https://www.youtube.com/watch?v=bAyaXyYM3Eo\""
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha ./node_modules/butter-test-streamer/",
     "lint": "standard --env mocha"
   },
   "repository": {
@@ -16,18 +19,18 @@
     "streamer",
     "youtube"
   ],
-  "author": "XeonCore",
+  "author": "Niv Sardi <x@btn.sh>",
   "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/butterstreamers/butter-streamer-youtube/issues"
   },
   "homepage": "https://github.com/butterstreamers/butter-streamer-youtube#readme",
   "dependencies": {
-    "butter-base-streamer": "^0.0.2",
+    "butter-streamer": "butterstreamers/butter-streamer",
     "debug": "^3.1.0",
     "ytdl-core": "^0.20.4"
   },
   "devDependencies": {
-    "standard": "^11.0.1"
+    "butter-test-streamer": "butterstreamers/butter-test-streamer"
   }
 }
