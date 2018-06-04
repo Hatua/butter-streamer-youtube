@@ -4,7 +4,7 @@
   "description": "Butter Streamer for youtube streams, the simplest around",
   "main": "index.js",
   "butter": {
-    "testArgs": "youtube?uri=\"https://www.youtube.com/watch?v=bAyaXyYM3Eo\""
+    "testArgs": "youtube?uri=\"https://www.youtube.com/watch?v=bAyaXyYM3Eo\"&test={\"this\":\"is JSON\"}&malformed={totototototo"
   },
   "scripts": {
     "test": "mocha ./node_modules/butter-test-streamer/",

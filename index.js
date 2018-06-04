@@ -22,35 +22,30 @@ const processLength = (info, format) => {
 }
 
 class YoutubeStreamer extends Streamer {
-  constructor (source, options = {}) {
-    super(options)
+  constructor (source, options) {
     options.youtube = options.youtube || {}
-
-    this.config = config
-
-    this._options = options
-    this._source = source
-    this.file = {}
-    this._video = ytdl(source, {quality: options.youtube.audio ? 140 : (options.youtube.hd ? 22 : 18)})
-    this._video.on('info', (info, format) =>
-      this.ready(this._video, processVideoInfo(info, format)))
+    super(source, options, config)
   }
 
-  seek (start = 0, end) {
-    if (this._destroyed) throw new ReferenceError('Streamer already destroyed')
-    debug('seek', start, end)
+  createStream(source, opts) {
+    return new Promise((accept, reject) => {
+      this._video = ytdl(source, {
+        quality: this.options.youtube.audio ? 140 : (this.options.youtube.hd ? 22 : 18),
+        range: opts ? opts.start + '-' + (opts.end !== undefined ? opts.end : ''): undefined
+      })
 
-    this._video = ytdl(this._source, {quality: this._options.youtube.audio ? 140 : (this._options.youtube.hd ? 22 : 18), range: start + '-' + (end !== undefined ? end : '')})
-
-    this._video.on('info', (info, format) =>
-      this.reset(this._video, processVideoInfo(info, format))
-    )
+      this._video.on('info', (info, format) =>
+        accept({
+          stream: this._video,
+          length: processLength(info, format)
+        })
+      )
+    })
   }
 
   destroy () {
     super.destroy()
     this._video = null
-    this.file = {}
   }
 }
 
