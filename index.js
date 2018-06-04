@@ -10,7 +10,7 @@ const config = {
   priority: 10
 }
 
-const processVideoInfo = (info, format) => ({
+const processFileInfo = (info, format) => ({
   length: processLength(info, format),
   type: format.type,
   name: 'youtube-video.' + format.container
@@ -37,7 +37,7 @@ class YoutubeStreamer extends Streamer {
       this._video.on('info', (info, format) =>
         accept({
           stream: this._video,
-          length: processLength(info, format)
+          file: processFileInfo(info, format)
         })
       )
     })
