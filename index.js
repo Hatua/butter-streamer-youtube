@@ -1,8 +1,13 @@
+const EventEmitter = require('events').EventEmitter
+
 const ytdl = require('ytdl-core')
+const request = require('request')
+
+const Streamer = require('butter-streamer')
+const HttpFile = require('butter-streamer-http/file')
+
 const debug = require('debug')('butter-streamer-youtube')
 
-const EventEmitter = require('events').EventEmitter
-const Streamer = require('butter-streamer')
 const config = {
   name: 'YouTube Streamer',
   domain: /(youtu.be|youtube.com)/,
@@ -22,37 +27,26 @@ const processLength = (info, format) => {
   return info.length_seconds * bitrate
 }
 
-class YoutubeFile extends EventEmitter{
-  constructor(info, format) {
-    super()
+class YoutubeFile extends HttpFile {
+  constructor(length, format) {
+    const httpInfo = {
+      length,
+      type: format.type,
+      name: format.type
+    }
 
-    Object.assign(this, info)
-    this.name = format.type
-    this.fid = format.itag
-    this.path = format.type
-    this.length = format.clen
-    this.ready = false
-    this.stream = null
-
-    debug('created', format)
-  }
-
-  createReadStream() {
-    this.stream = ytdl(this.video_url, {quality: Number(this.fid)})
-      .on('info', (info, format) => {
-        this.streamReady()
-      })
-
-    return this.stream
-  }
-
-  streamReady() {
-    this.ready = true
-
-    debug('ready', this.format)
-    this.emit('ready', this.stream)
+    super(format.url, httpInfo)
   }
 }
+
+const fileForFormat = (format) => (
+  new Promise((resolve, reject) => {
+    request.head(format.url)
+           .on('response', res => (
+             resolve(new YoutubeFile(Number(res.headers['content-length']), format))
+           ))
+  })
+)
 
 class YoutubeStreamer extends Streamer {
   constructor (source, options) {
@@ -62,14 +56,11 @@ class YoutubeStreamer extends Streamer {
 
   initialize(source, options, config) {
     return new Promise((resolve, reject) => {
-      this._video = ytdl(source)
-
-      this._video.on('info', (info, format) => {
-        this.name = info.title
-        const files = info.formats.map(format => new YoutubeFile(info, format))
-
-        resolve(files)
-      })
+      ytdl(source)
+        .on('info', (info, format) => {
+          this.name = info.title
+          Promise.all(info.formats.map(fileForFormat)).then(resolve)
+        })
     })
   }
 

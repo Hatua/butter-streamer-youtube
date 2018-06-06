@@ -27,7 +27,9 @@
   "homepage": "https://github.com/butterstreamers/butter-streamer-youtube#readme",
   "dependencies": {
     "butter-streamer": "butterstreamers/butter-streamer",
+    "butter-streamer-http": "butterstreamers/butter-streamer-http",
     "debug": "^3.1.0",
+    "request": "^2.87.0",
     "ytdl-core": "^0.20.4"
   },
   "devDependencies": {
