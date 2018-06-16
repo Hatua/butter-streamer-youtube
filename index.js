@@ -3,7 +3,7 @@ const EventEmitter = require('events').EventEmitter
 const ytdl = require('ytdl-core')
 const request = require('request')
 
-const Streamer = require('butter-streamer')
+const ProgressStreamer = require('butter-streamer/progress/streamer')
 const HttpFile = require('butter-streamer-http/file')
 
 const debug = require('debug')('butter-streamer-youtube')
@@ -48,7 +48,7 @@ const fileForFormat = (format) => (
   })
 )
 
-class YoutubeStreamer extends Streamer {
+class YoutubeStreamer extends ProgressStreamer {
   constructor (source, options) {
     options.youtube = options.youtube || {}
     super(source, options, config)
@@ -59,7 +59,8 @@ class YoutubeStreamer extends Streamer {
       ytdl(source)
         .on('info', (info, format) => {
           this.name = info.title
-          Promise.all(info.formats.map(fileForFormat)).then(resolve)
+          Promise.all(info.formats.map(fileForFormat))
+                          .then(resolve)
         })
     })
   }
